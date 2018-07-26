@@ -15,26 +15,26 @@ from zbase32 import *
 from zbase32 import b2a
 
 def insecurerandstr(n):
-    return ''.join(map(chr, map(random.randrange, [0]*n, [256]*n)))
+    return ''.join(map(chr, list(map(random.randrange, [0]*n, [256]*n))))
 
 class base32TestCase(unittest.TestCase):
     def test_ende(self):
         bs = insecurerandstr(2**3)
         cs=b2a(bs)
         bs2=a2b(cs)
-        assert bs2 == bs, "bs2: %s, bs: %s" % (`bs2`, `bs`,)
+        assert bs2 == bs, "bs2: %s, bs: %s" % (repr(bs2), repr(bs),)
 
     def test_ende_long(self):
         bs = insecurerandstr(2**3)
         cs=b2a_long(bs)
         bs2=a2b_long(cs)
-        assert bs2 == bs, "bs2: %s, bs: %s" % (`bs2`, `bs`,)
+        assert bs2 == bs, "bs2: %s, bs: %s" % (repr(bs2), repr(bs),)
 
     def test_both(self):
         bs = insecurerandstr(2**3)
         cs=b2a(bs)
         asl=b2a_long(bs)
-        assert cs == asl, "cs: %s, asl: %s" % (`cs`, `asl`,)
+        assert cs == asl, "cs: %s, asl: %s" % (repr(cs), repr(asl),)
         cs=b2a(bs)
         bs2=a2b(cs)
         bs2l=a2b_long(cs)
@@ -45,7 +45,7 @@ class base32TestCase(unittest.TestCase):
         bs = insecurerandstr(2**9)
         cs=b2a(bs)
         asl=b2a_long(bs)
-        assert cs == asl, "cs: %s, asl: %s" % (`cs`, `asl`,)
+        assert cs == asl, "cs: %s, asl: %s" % (repr(cs), repr(asl),)
         cs=b2a(bs)
         bs2=a2b(cs)
         bs2l=a2b_long(cs)
@@ -69,7 +69,7 @@ class base32TestCase(unittest.TestCase):
             bs2l = a2b_l_long(cs, lib)
             assert len(bs2l) == (lib+7)/8 # the size of the result must be just right
             assert bs2 == bs2l
-            assert trimnpad(bs, lib) == bs2, "trimnpad(%s, %s): %s, bs2: %s" % (`bs`, lib, `trimnpad(bs, lib)`, `bs2`,)
+            assert trimnpad(bs, lib) == bs2, "trimnpad(%s, %s): %s, bs2: %s" % (repr(bs), lib, repr(trimnpad(bs, lib)), repr(bs2),)
 
     def test_odd_sizes(self):
         for j in range(2**6):
@@ -91,17 +91,17 @@ class base32TestCase(unittest.TestCase):
             bs2l = a2b_l_long(cs, lib)
             assert len(bs2l) == (lib+7)/8 # the size of the result must be just right
             assert bs2 == bs2l
-            assert trimnpad(bs, lib) == bs2, "trimnpad(%s, %s): %s, bs2: %s" % (`bs`, lib, `trimnpad(bs, lib)`, `bs2`,)
+            assert trimnpad(bs, lib) == bs2, "trimnpad(%s, %s): %s, bs2: %s" % (repr(bs), lib, repr(trimnpad(bs, lib)), repr(bs2),)
 
     def test_n8mo4_is_an_encoding(self):
-        self.failUnless(could_be_base32_encoded_l('n8mo4', 25))
+        self.assertTrue(could_be_base32_encoded_l('n8mo4', 25))
 
     def test_could_be(self):
         # base-32 encoded strings could be
         for j in range(2**9):
             rands = insecurerandstr(random.randrange(1, 2**7))
             randsenc = b2a(rands)
-            assert could_be_base32_encoded(randsenc), "rands: %s, randsenc: %s, a2b(randsenc): %s" % (`rands`, `randsenc`, `a2b(randsenc)`,)
+            assert could_be_base32_encoded(randsenc), "rands: %s, randsenc: %s, a2b(randsenc): %s" % (repr(rands), repr(randsenc), repr(a2b(randsenc)),)
 
         # base-32 encoded strings with unusual bit lengths could be, too
         for j in range(2**9):
@@ -137,13 +137,13 @@ def _help_bench_ed_l(N):
 
 def benchem():
     import benchfunc # from pyutil
-    print "e: "
+    print("e: ")
     benchfunc.bench(_help_bench_e, TOPXP=13)
-    print "ed: "
+    print("ed: ")
     benchfunc.bench(_help_bench_ed, TOPXP=13)
-    print "e_l: "
+    print("e_l: ")
     benchfunc.bench(_help_bench_e_l, TOPXP=13)
-    print "ed_l: "
+    print("ed_l: ")
     benchfunc.bench(_help_bench_ed_l, TOPXP=13)
 
 def suite():

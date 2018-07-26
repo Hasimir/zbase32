@@ -1,1 +1,1 @@
-from zbase32 import *
+from .zbase32 import *

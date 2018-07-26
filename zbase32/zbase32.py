@@ -62,7 +62,7 @@ def _get_trailing_chars_without_lsbs(N, d):
         s.extend(_get_trailing_chars_without_lsbs(N+1, d=d))
     i = 0
     while i < len(chars):
-        if not d.has_key(i):
+        if i not in d:
             d[i] = None
             s.append(chars[i])
         i = i + 2**N
@@ -76,12 +76,12 @@ def get_trailing_chars_without_lsbs(N):
     return ''.join(_get_trailing_chars_without_lsbs(N, d=d))
 
 def print_trailing_chars_without_lsbs(N):
-    print get_trailing_chars_without_lsbs(N)
+    print(get_trailing_chars_without_lsbs(N))
 
 def print_trailing_chars():
     N = 4
     while N >= 0:
-        print "%2d" % N + ": ",
+        print("%2d" % N + ": ", end=' ')
         print_trailing_chars_without_lsbs(N)
         N = N - 1
 
@@ -122,7 +122,7 @@ def b2a_l(os, lengthinbits):
 
     @return the contents of os in base-32 encoded form
     """
-    precondition(isinstance(lengthinbits, (int, long,)), "lengthinbits is required to be an integer.", lengthinbits=lengthinbits)
+    precondition(isinstance(lengthinbits, int), "lengthinbits is required to be an integer.", lengthinbits=lengthinbits)
     precondition(div_ceil(lengthinbits, 8) == len(os), "lengthinbits is required to specify a number of bits storable in exactly len(os) octets.", lengthinbits=lengthinbits, lenos=len(os))
     # precondition((lengthinbits % 8==0) or ((ord(os[-1]) % (2**(8-(lengthinbits%8))))==0), "Any unused least-significant bits in os are required to be zero bits.", ord(os[-1]), lengthinbits=lengthinbits) # removing this precondition, because I like to use it with random os, like this: base32.b2a_l(file("/dev/urandom", "r").read(9), 65)
 
@@ -322,10 +322,10 @@ def b2a_l_long(os, lengthinbits):
 
     quintets = []
     i = 0
-    CUTOFF = 2L**35
+    CUTOFF = 2**35
     while len(quintets) < numquintets:
         # take the next 5 octets and turn them into 8 quintets
-        num = 0L # i am a LONG!  hear me roar
+        num = 0 # i am a LONG!  hear me roar
         for j in range(5):
             num = num *256
             num = num + os[i]
@@ -337,7 +337,7 @@ def b2a_l_long(os, lengthinbits):
             num = num * 32
     quintets = quintets[:numquintets]
     res = string.translate(''.join([chr(q) for q in quintets]), v2ctranstable)
-    assert could_be_base32_encoded_l(res, lengthinbits), "lengthinbits: %s, res: %s, origos: %s" % (lengthinbits, res, `origos`)
+    assert could_be_base32_encoded_l(res, lengthinbits), "lengthinbits: %s, res: %s, origos: %s" % (lengthinbits, res, repr(origos))
     return res
 
 def a2b_long(cs):
@@ -365,10 +365,10 @@ def a2b_l_long(cs, lengthinbits):
 
     octets = []
     i = 0
-    CUTOFF = 2L**32
+    CUTOFF = 2**32
     while len(octets) < numoctets:
         # take the next 8 quintets and turn them into 5 octets
-        num = 0L # i am a LONG!  hear me roar
+        num = 0 # i am a LONG!  hear me roar
         for j in range(8):
             num = num * 32
             num = num + qs[i]
@@ -429,12 +429,12 @@ def _help_bench_ed_l(N):
 
 def benchem():
     import benchfunc # from pyutil
-    print "e: "
+    print("e: ")
     benchfunc.bench(_help_bench_e, TOPXP=13)
-    print "ed: "
+    print("ed: ")
     benchfunc.bench(_help_bench_ed, TOPXP=13)
-    print "e_l: "
+    print("e_l: ")
     benchfunc.bench(_help_bench_e_l, TOPXP=13)
-    print "ed_l: "
+    print("ed_l: ")
     benchfunc.bench(_help_bench_ed_l, TOPXP=13)
 

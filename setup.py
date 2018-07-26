@@ -51,7 +51,7 @@ setup_requires = []
 PKG='zbase32'
 __VERSION_FILE = os.path.join(PKG, '_version.py')
 __VERSION_LOCALS={}
-execfile(__VERSION_FILE, __VERSION_LOCALS)
+exec(compile(open(__VERSION_FILE).read(), __VERSION_FILE, 'exec'), __VERSION_LOCALS)
 
 if '__version__' not in __VERSION_LOCALS:
     raise RuntimeError("No __version__ defined in in %s." % __VERSION_FILE)
@@ -91,7 +91,7 @@ def _setup(test_suite):
 test_suite_name=PKG+".test"
 try:
     _setup(test_suite=test_suite_name)
-except BaseException, le:
+except BaseException as le:
     # to work around a bug in Elisa v0.3.5
     if "test_suite must be a list" in str(le):
         _setup(test_suite=[test_suite_name])

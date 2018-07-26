@@ -8,7 +8,7 @@ import string
 
 from pyutil import humanreadable
 
-import zbase32 
+from . import zbase32 
 
 printableascii = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_=+!@#$%^&*()`~[]\{}|;':\",./<>? \t" # I just typed this in by looking at my keyboard.  It probably doesn't matter much if I missed some, because I only use it to guess whether a 20-byte string should be represented as a string or as an ID.  If all of the characters in the string are found `printableascii', then we guess that it is a string, not an id.
 nulltrans = string.maketrans('', '')
@@ -37,14 +37,14 @@ class AbbrevRepr(humanreadable.BetterRepr):
             # But maybe it was just a 20-character human-readable string, like "credit limit reached", so this is an attempt to detect that case.
             if len(obj.translate(nulltrans, printableascii)) == 0:
                 if self.maxstring >= 22:
-                    return `obj`
+                    return repr(obj)
 
                 # inlining repr.repr_string() here...
-                s = `obj[:self.maxstring]`
+                s = repr(obj[:self.maxstring])
                 if len(s) > self.maxstring:
                     i = max(0, (self.maxstring-3)/2)
                     j = max(0, self.maxstring-3-i)
-                    s = `obj[:i] + obj[len(obj)-j:]`
+                    s = repr(obj[:i] + obj[len(obj)-j:])
                     s = s[:i] + '...' + s[len(s)-j:]
                     # ... done inlining `repr.repr_string()'
                 return s
@@ -55,11 +55,11 @@ class AbbrevRepr(humanreadable.BetterRepr):
             return '<' + obj[:5] + '>'
         else:
             # inlining repr.repr_string() here...
-            s = `obj[:self.maxstring]`
+            s = repr(obj[:self.maxstring])
             if len(s) > self.maxstring:
                 i = max(0, (self.maxstring-3)/2)
                 j = max(0, self.maxstring-3-i)
-                s = `obj[:i] + obj[len(obj)-j:]`
+                s = repr(obj[:i] + obj[len(obj)-j:])
                 s = s[:i] + '...' + s[len(s)-j:]
             # ... done inlining `repr.repr_string()'
             return s
